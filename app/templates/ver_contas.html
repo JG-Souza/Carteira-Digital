@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draco | Contas</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/ver_contas.css') }}"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='assets/favico.png') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Card Principal -->
+      <div class="main-card">
+        <!-- Botão de Voltar -->
+        <div class="top-bar">
+          <a href="{{ url_for('dashboard') }}" class="btn-voltar">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </a>
+        </div>
+        <!-- Saldo Total -->
+        <div class="saldo-container">
+          <div class="saldo-circle">
+            <span>R${{ "{:.2f}".format(saldo_total) }}</span>
+          </div>
+        </div>
+        <hr class="separator" />
+        <!-- Lista de Contas -->
+        <div class="lista-contas">
+          <h3>Minhas Contas</h3>
+          <div class="contas-container">
+            {% for conta in contas %}
+            <div class="conta-card">
+              <i class="fas fa-wallet"></i>
+              <div class="conta-info">
+                <h4>{{ conta.nome }}</h4>
+                <a
+                  href="{{ url_for('contas.detalhe_conta', user_id=user.id, conta_id=conta.id) }}"
+                  class="btn-detalhes"
+                  >Ver Detalhes</a
+                >
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Botão Criar Nova Conta -->
+          <div class="botao-nova-conta">
+            <a
+              href="{{ url_for('contas.criar_conta', user_id=user.id) }}"
+              class="btn-criar"
+            >
+              Criar Nova Conta
+            </a>
+          </div>
+        </div>
+        <hr class="separator" />
+        <!-- Lista de Transações -->
+        <h2 class="mb-3">Últimas Transações</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Natureza</th>
+              <th>Valor (R$)</th>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Conta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Exemplo de linha de transação (pode ser substituído com Flask Jinja2) -->
+            {% for transacao in transacoes[-5:]|reverse %}
+            <tr>
+              <td>{{ transacao.natureza }}</td>
+              <td>{{ "%.2f"|format(transacao.valor) }}</td>
+              <td>{{ transacao.data.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>{{ transacao.descricao or "N/A" }}</td>
+              <td>{{ transacao.conta.nome }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

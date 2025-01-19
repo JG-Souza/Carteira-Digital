@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draco | Conta</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/detalhe_conta.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='assets/favico.png') }}"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Botão de Voltar -->
+      <div class="top-bar">
+        <a href="{{ url_for('contas.ver_contas', user_id=user_id) }}" class="btn-voltar">
+          <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+      </div>
+
+      <div class="saldo-container">
+        <div class="saldo-circle">
+          <span>R${{ "{:.2f}".format(conta.saldo) }}</span>
+
+        </div>
+      </div>
+
+      <h1>Detalhes de {{ conta.nome }}</h1>
+
+      <form class="form" method="POST" action="{{ url_for('contas.update', conta_id=conta.id) }}">
+        <div class="form-row">
+          <label for="nome">Nome da Conta</label>
+          <input type="text" id="nome" name="nome" value="{{ conta.nome }}" required />
+        </div>
+
+        <div class="form-row">
+          <label for="instituicao_bancaria">Instituição Bancária</label>
+          <select id="instituicao_bancaria" name="instituicao_bancaria" required>
+            <option value="Banco Inter" {% if conta.instituicao_bancaria == "Banco Inter" %}selected{% endif %}>
+              Banco Inter
+            </option>
+            <option value="Nubank" {% if conta.instituicao_bancaria == "Nubank" %}selected{% endif %}>
+              Nubank
+            </option>
+            <option value="Banco do Brasil" {% if conta.instituicao_bancaria == "Banco do Brasil" %}selected{% endif %}>
+              Banco do Brasil
+            </option>
+            <option value="Bradesco" {% if conta.instituicao_bancaria == "Bradesco" %}selected{% endif %}>
+              Bradesco
+            </option>
+            <option value="Caixa" {% if conta.instituicao_bancaria == "Caixa" %}selected{% endif %}>
+              Caixa
+            </option>
+            <option value="Itau" {% if conta.instituicao_bancaria == "Itau" %}selected{% endif %}>
+              Itaú
+            </option>
+            <option value="Santander" {% if conta.instituicao_bancaria == "Santander" %}selected{% endif %}>
+              Santander
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="descricao">Descrição</label>
+          <input type="text" id="descricao" name="descricao" value="{{ conta.descricao }}" required />
+        </div>
+
+        <div class="form-row">
+          <label for="tipo_conta">Tipo de Conta</label>
+          <select id="tipo_conta" name="tipo_conta" required>
+            <option value="Conta corrente" {% if conta.tipo_conta == "Conta corrente" %}selected{% endif %}>
+              Conta Corrente
+            </option>
+            <option value="Carteira" {% if conta.tipo_conta == "Carteira" %}selected{% endif %}>
+              Carteira
+            </option>
+            <option value="Poupança" {% if conta.tipo_conta == "Poupança" %}selected{% endif %}>
+              Poupança
+            </option>
+            <option value="Investimentos" {% if conta.tipo_conta == "Investimentos" %}selected{% endif %}>
+              Investimentos
+            </option>
+            <option value="Outros" {% if conta.tipo_conta == "Outros" %}selected{% endif %}>
+              Outros
+            </option>
+          </select>
+        </div>
+
+        <input type="hidden" name="user_id" value="{{ user_id }}" />
+
+        <button type="submit" class="save-button">Salvar Alterações</button>
+      </form>
+      <form action="{{ url_for('contas.delete', user_id=current_user.id, conta_id=conta.id) }}" method="POST">
+        <button type="submit" class="delete-btn">
+          Excluir Conta
+        </button>
+      </form>
+
+      <!-- Botões para ações adicionais -->
+      <div class="action-buttons">
+        <form action="{{ url_for('contas.ver_extrato', user_id=current_user.id, conta_id=conta.id) }}">
+        <button id="ver-extrato-btn" class="ver-extrato-btn">
+          <i class="fa-solid fa-list"></i> Ver extrato
+        </button>
+      </form>
+        <button id="new-transaction-btn" class="new-transaction-btn">
+          <i class="fas fa-plus"></i> Nova Transação
+        </button>
+      </div>
+      
+    </div>
+    
+
+    <!-- Modal para Nova Transação -->
+    <div id="transaction-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Nova Transação</h2>
+        <form method="POST" id="transaction-form" action="/contas/{{ conta_id }}/sacar" data-conta-id="{{ conta_id }}">
+          <div class="form-row">
+            <label for="natureza">Natureza</label>
+            <select id="natureza" name="natureza" required>
+              <option value="Saque">Saque</option>
+              <option value="Deposito">Depósito</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="valor">Valor</label>
+            <input type="number" id="valor" name="valor" step="0.01" required />
+          </div>
+          <div class="form-row">
+            <label for="data">Data</label>
+            <input type="date" id="data" name="data" required />
+          </div>
+          <div class="form-row">
+            <label for="descricao-transacao">Descrição</label>
+            <input type="text" id="descricao-transacao" name="descricao-transacao" required />
+          </div>
+          <button type="submit" class="save-button">Salvar Transação</button>
+        </form>
+        
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/detalhe_conta.js') }}"></script>
+  </body>
+</html>
+
+
+
+

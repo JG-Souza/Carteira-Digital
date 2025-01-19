@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draco | Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='assets/favico.png') }}"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <h1>Bem-vindo, {{ user.name }}</h1>
+        <p>Este é o seu painel de controle.</p>
+      </div>
+
+      <div class="card-container">
+        <div class="card">
+          <i class="fas fa-wallet"></i>
+          <h3>Suas Contas</h3>
+          <p>Gerencie suas contas e despesas.</p>
+          <a href="{{ url_for('contas.ver_contas', user_id=user.id) }}"
+            >Ver Contas</a
+          >
+        </div>
+
+        <div class="card">
+          <i class="fas fa-user-circle"></i>
+          <h3>Seu Perfil</h3>
+          <p>Atualize suas informações pessoais.</p>
+          <a href="{{ url_for('ver_perfil', user_id=user.id) }}">Ver Perfil</a>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-sign-out-alt"></i>
+          <h3>Sair</h3>
+          <p>Encerrar sua sessão.</p>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

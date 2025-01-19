@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draco | Extrato</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/extrato_conta.css') }}"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='assets/favico.png') }}"
+    />
+  </head>
+  <body>
+    <div class="transactions-container">
+      <!-- Botão de Voltar -->
+      <div class="top-bar">
+        <a
+          href="{{ url_for('contas.detalhe_conta', user_id=current_user.id, conta_id=conta.id) }}"
+          class="btn-voltar"
+        >
+          <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+      </div>
+      <div class="transactions-card">
+        <h1>Transações de {{ conta.nome }}</h1>
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>Natureza</th>
+              <th>Valor</th>
+              <th>Data</th>
+              <th>Descrição</th>
+              <!-- Nova coluna de Descrição -->
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transacao in transacoes %}
+            <tr>
+              <td>{{ transacao.natureza }}</td>
+              <td>{{ "%.2f"|format(transacao.valor) }}</td>
+              <td>{{ transacao.data.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>{{ transacao.descricao or 'Não especificada' }}</td>
+              <!-- Exibindo a descrição da transação -->
+              <td>
+                <div class="actions">
+                  <a href="3" class="btn-action edit">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <form action="3" method="POST" class="delete-form">
+                    <button type="submit" class="btn-action delete">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

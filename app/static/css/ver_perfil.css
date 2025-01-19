@@ -1,0 +1,132 @@
+:root {
+  --rosa: #d963bc;
+  --azul-escuro: #232440;
+  --cinza-escuro: #363759;
+  --branco: #eeeeee;
+  --cinza-claro: #cdcdcd;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, var(--azul-escuro), var(--cinza-escuro));
+  color: var(--branco);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.profile-container {
+  width: 90%;
+  max-width: 400px;
+  background: var(--cinza-escuro);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.btn-voltar {
+  text-decoration: none;
+  color: var(--rosa);
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.btn-voltar i {
+  font-size: 16px;
+}
+
+.profile-header {
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 3px solid var(--rosa);
+}
+
+.username {
+  color: var(--cinza-claro);
+  font-size: 14px;
+  margin-top: -10px;
+}
+
+.profile-form {
+  margin-top: 20px;
+}
+
+.form-row {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+label {
+  font-size: 14px;
+  color: var(--cinza-claro);
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 95%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--azul-escuro);
+  color: var(--branco);
+  font-size: 16px;
+}
+
+input::placeholder {
+  color: var(--cinza-claro);
+}
+
+.save-button {
+  width: 100%;
+  padding: 12px;
+  background: var(--rosa);
+  border: none;
+  border-radius: 8px;
+  color: var(--branco);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-button:hover {
+  background: var(--azul-escuro);
+}
+
+.delete-btn {
+  width: 100%;
+  padding: 12px;
+  background: #e63946; /* Vermelho alerta */
+  border: none;
+  border-radius: 8px;
+  color: var(--branco);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background 0.3s;
+}
+
+.delete-btn:hover {
+  background: #b71c1c; /* Vermelho mais escuro no hover */
+}

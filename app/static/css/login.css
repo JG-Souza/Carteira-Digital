@@ -1,0 +1,103 @@
+:root {
+  --rosa: #d963bc;
+  --azul-escuro: #232440;
+  --cinza-escuro: #363759;
+  --branco: #eeeeee;
+  --cinza-claro: #cdcdcd;
+}
+
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background: var(--azul-escuro);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: var(--branco);
+}
+
+.login-container {
+  background: var(--cinza-escuro);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: var(--branco);
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  background: var(--branco);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.input-group i {
+  margin-right: 10px;
+  color: var(--cinza-escuro);
+  font-size: 16px;
+}
+
+.input-group input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--azul-escuro);
+  background: transparent;
+}
+
+.input-group input::placeholder {
+  color: var(--cinza-claro);
+}
+
+button {
+  background: var(--rosa);
+  color: var(--branco);
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: var(--cinza-claro);
+}
+
+.register-btn {
+  background: transparent;
+  color: var(--rosa);
+  border: 1px solid var(--rosa);
+  padding: 12px 30px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.register-btn:hover {
+  background: var(--rosa);
+  color: var(--branco);
+}
