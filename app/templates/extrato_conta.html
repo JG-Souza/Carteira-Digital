@@ -55,7 +55,11 @@
                   <a href="3" class="btn-action edit">
                     <i class="fas fa-edit"></i>
                   </a>
-                  <form action="3" method="POST" class="delete-form">
+                  <form
+                    action="{{ url_for('contas.delete_transacao',user_id = user.id, conta_id=conta.id, transacao_id=transacao.id) }}"
+                    method="POST"
+                    class="delete-form"
+                  >
                     <button type="submit" class="btn-action delete">
                       <i class="fas fa-trash-alt"></i>
                     </button>

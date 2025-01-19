@@ -30,20 +30,20 @@ class Conta(db.Model):
         raise AttributeError("Não é possível alterar o saldo diretamente!")
     
 
-    def depositar(self, valor, descricao=None):
+    def depositar(self, valor, data, descricao):
         if valor <= 0:
             raise ValueError('O valor deve ser positivo')
         self._saldo += valor
-        transacao = Transacao(natureza='deposito', valor=valor, conta=self, descricao=descricao)
+        transacao = Transacao(natureza='deposito', valor=valor, conta=self, data=data, descricao=descricao)
         db.session.add(transacao)
         db.session.commit()
 
-    def sacar(self, valor, descricao=None):
+    def sacar(self, valor, data, descricao):
         if valor <= 0:
             raise ValueError("O saque deve ser de um valor positivo")
         if valor > self._saldo:
             raise ValueError("Saldo insuficiente")
         self._saldo -= valor
-        transacao = Transacao(natureza='saque', valor=-valor, conta=self, descricao=descricao)
+        transacao = Transacao(natureza='saque', valor=valor, conta=self, data=data, descricao=descricao)
         db.session.add(transacao)
         db.session.commit()

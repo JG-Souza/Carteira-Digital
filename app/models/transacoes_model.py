@@ -7,7 +7,7 @@ class Transacao(db.Model):
     natureza = db.Column(db.String(20), nullable=False)
     valor = db.Column(db.Float, nullable=False)
     data = db.Column(db.DateTime, default=datetime.utcnow)  # Data da transação
-    descricao = db.Column(db.String(200))
+    descricao = db.Column(db.String(50))
 
     conta_id = db.Column(db.Integer, db.ForeignKey('contas.id'), nullable=False)
     conta = db.relationship('Conta', backref=db.backref('transacoes', lazy=True))
@@ -15,11 +15,12 @@ class Transacao(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('transacoes'), lazy=True)
 
-    def __init__(self, natureza, valor, conta, descricao=None):
+    def __init__(self, natureza, valor, conta, data, descricao):
         self.natureza = natureza
         self.valor = valor
         self.conta = conta
         self.user = conta.user
+        self.data = data
         self.descricao = descricao
 
     def __repr__(self):

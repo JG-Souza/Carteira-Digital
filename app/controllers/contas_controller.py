@@ -84,10 +84,12 @@ def detalhe_conta(user_id, conta_id):
 @login_required
 def depositar(conta_id):
     conta = Conta.query.get(conta_id)
+    data = datetime.strptime(request.form.get('data'), '%Y-%m-%d') # Convertendo para datetime
+    descricao = request.form.get('descricao')
     if conta:
         valor = float(request.form['valor'])
         try:
-            conta.depositar(valor)
+            conta.depositar(valor, data, descricao)
             return redirect(url_for('contas.ver_contas', user_id=conta.user_id)) # trocar a rota
         except ValueError as e:
             return str(e), 400 # Criar template dinamica para erros
@@ -100,8 +102,10 @@ def sacar(conta_id):
     conta = Conta.query.get(conta_id)
     if conta:
         valor = float(request.form['valor'])
+        data = datetime.strptime(request.form.get('data'), '%Y-%m-%d') # Convertendo para datetime
+        descricao = request.form.get('descricao')
         try:
-            conta.sacar(valor)
+            conta.sacar(valor, data, descricao)
             return redirect(url_for('contas.ver_contas', user_id=conta.user_id)) # trocar a rota
         except ValueError as e:
             return str(e), 400
@@ -120,7 +124,7 @@ def ver_extrato(user_id, conta_id):
             if transacao.conta_id == conta.id:
                 return render_template('extrato_conta.html', transacoes=transacoes, conta=conta)
             
-    return redirect(url_for('contas.ver_contas')) 
+    return redirect(url_for('contas.ver_contas', user_id=user.id)) 
 
 
 @contas_bp.route('<int:user_id>/conta/<int:conta_id>/delete', methods=['GET', 'POST'])
@@ -140,4 +144,21 @@ def delete(user_id, conta_id):
         db.session.commit()
 
         return redirect(url_for('contas.ver_contas',  user_id=user.id))
+    
+
+@contas_bp.route('<int:conta_id>/transacao/delete/<int:transacao_id>', methods=['POST'])
+def delete_transacao(transacao_id, conta_id):
+    transacao = Transacao.query.get(transacao_id)
+    if transacao:
+        conta = transacao.conta
+        if transacao.natureza == 'saque':
+            conta._saldo += transacao.valor
+        elif transacao.natureza == 'deposito':
+            conta._saldo -= transacao.valor
+        db.session.delete(transacao)
+        db.session.commit()
+
+        return redirect(url_for('contas.ver_extrato',conta_id=conta_id, user_id=current_user.id))
+    
+    return "Transação não encontrada", 404
 

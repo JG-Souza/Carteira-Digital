@@ -82,7 +82,7 @@
             <tr>
               <td>{{ transacao.natureza }}</td>
               <td>{{ "%.2f"|format(transacao.valor) }}</td>
-              <td>{{ transacao.data.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td>{{ transacao.data.strftime('%d/%m/%Y') }}</td>
               <td>{{ transacao.descricao or "N/A" }}</td>
               <td>{{ transacao.conta.nome }}</td>
             </tr>
