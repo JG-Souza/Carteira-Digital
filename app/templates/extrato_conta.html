@@ -52,9 +52,6 @@
               <!-- Exibindo a descrição da transação -->
               <td>
                 <div class="actions">
-                  <a href="3" class="btn-action edit">
-                    <i class="fas fa-edit"></i>
-                  </a>
                   <form
                     action="{{ url_for('contas.delete_transacao',user_id = user.id, conta_id=conta.id, transacao_id=transacao.id) }}"
                     method="POST"

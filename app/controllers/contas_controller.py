@@ -30,14 +30,19 @@ def criar_conta(user_id):
 @contas_bp.route('/update/<int:conta_id>', methods=['GET', 'POST'])
 @login_required
 def update(conta_id):
-    if request.method == 'POST':
-        conta = Conta.query.get(conta_id)
+    conta = Conta.query.get(conta_id)
 
+    if not conta:
+        return "Conta não encontrada", 404
+
+    if conta.user_id != current_user.id:
+        return "Acesso não autorizado", 403
+
+    if request.method == 'POST':
         nome = request.form.get('nome')
         instituicao = request.form.get('instituicao_bancaria')
         descricao = request.form.get('descricao')
         tipo_conta = request.form.get('tipo_conta')
-        
 
         if nome and nome != conta.nome:
             conta.nome = nome
@@ -52,11 +57,11 @@ def update(conta_id):
             db.session.commit()
         except Exception as e:
             db.session.rollback()
-            print(e)
+            return f"Erro ao atualizar conta: {str(e)}", 500
 
         return redirect(url_for('contas.ver_contas', user_id=conta.user_id))
     
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', conta=conta)
 
 
 @contas_bp.route('/<int:user_id>/contas')
@@ -84,6 +89,9 @@ def detalhe_conta(user_id, conta_id):
 @login_required
 def depositar(conta_id):
     conta = Conta.query.get(conta_id)
+    if conta.user_id != current_user.id:
+        return "Acesso não autorizado", 403
+    
     data = datetime.strptime(request.form.get('data'), '%Y-%m-%d') # Convertendo para datetime
     descricao = request.form.get('descricao')
     if conta:
@@ -100,6 +108,9 @@ def depositar(conta_id):
 @login_required
 def sacar(conta_id):
     conta = Conta.query.get(conta_id)
+    if conta.user_id != current_user.id:
+        return "Acesso não autorizado", 403
+
     if conta:
         valor = float(request.form['valor'])
         data = datetime.strptime(request.form.get('data'), '%Y-%m-%d') # Convertendo para datetime
@@ -117,48 +128,67 @@ def sacar(conta_id):
 def ver_extrato(user_id, conta_id):
     user = User.query.get(user_id)
     conta = Conta.query.get(conta_id)
-    transacoes = Transacao.query.all()
 
     if conta and conta.user_id == user.id:
-        for transacao in transacoes:
-            if transacao.conta_id == conta.id:
-                return render_template('extrato_conta.html', transacoes=transacoes, conta=conta, user=user)
-            
-    return redirect(url_for('contas.ver_contas', user_id=user.id)) 
+        transacoes = Transacao.query.filter_by(conta_id=conta.id).all()
+        return render_template('extrato_conta.html', transacoes=transacoes, conta=conta, user=user)
+    
+    return redirect(url_for('contas.ver_contas', user_id=user.id))
 
 
-@contas_bp.route('<int:user_id>/conta/<int:conta_id>/delete', methods=['GET', 'POST'])
+@contas_bp.route('<int:user_id>/conta/<int:conta_id>/delete', methods=['POST'])
 @login_required
 def delete(user_id, conta_id):
     user = User.query.get(user_id)
     conta = Conta.query.get(conta_id)
-    transacoes = Transacao.query.all()
 
-    if conta and conta.user_id == user.id:
+    if not user or not conta or conta.user_id != current_user.id:
+        return "Acesso não autorizado ou conta inexistente", 403
+
+    try:
+        # Deletar transações da conta
+        transacoes = Transacao.query.filter_by(conta_id=conta.id).all()
         for transacao in transacoes:
-            if transacao.conta_id == conta.id:
-                db.session.delete(transacao)
-                db.session.commit()
+            db.session.delete(transacao)
 
+        # Deletar conta
         db.session.delete(conta)
         db.session.commit()
 
-        return redirect(url_for('contas.ver_contas',  user_id=user.id))
+        return redirect(url_for('contas.ver_contas', user_id=user.id))
+    except Exception as e:
+        db.session.rollback()
+        return f"Erro ao deletar conta: {str(e)}", 500
     
 
 @contas_bp.route('<int:conta_id>/transacao/delete/<int:transacao_id>', methods=['POST'])
+@login_required
 def delete_transacao(transacao_id, conta_id):
     transacao = Transacao.query.get(transacao_id)
-    if transacao:
-        conta = transacao.conta
+
+    if not transacao or transacao.conta_id != conta_id:
+        return "Transação não encontrada ou conta incorreta", 404
+
+    conta = transacao.conta
+
+    # Verifica se a conta pertence ao usuário logado
+    if conta.user_id != current_user.id:
+        return "Acesso não autorizado", 403
+
+    try:
+        # Reverte o saldo
         if transacao.natureza == 'saque':
             conta._saldo += transacao.valor
         elif transacao.natureza == 'deposito':
             conta._saldo -= transacao.valor
+
         db.session.delete(transacao)
         db.session.commit()
 
-        return redirect(url_for('contas.ver_extrato',conta_id=conta_id, user_id=current_user.id))
-    
-    return "Transação não encontrada", 404
+        return redirect(url_for('contas.ver_extrato', conta_id=conta_id, user_id=current_user.id))
+
+    except Exception as e:
+        db.session.rollback()
+        return f"Erro ao deletar transação: {str(e)}", 500
+
 

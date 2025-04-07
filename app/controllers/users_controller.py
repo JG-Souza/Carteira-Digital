@@ -112,13 +112,13 @@ def ver_perfil():
     return render_template('ver_perfil.html', user=current_user)
 
 
-@app.route('/delete/<int:user_id>', methods=['GET', 'POST'])
+@app.route('/delete', methods=['POST'])
 @login_required
-def delete(user_id):
-    user = User.query.get(user_id)
+def delete():
+    user = User.query.get(current_user.id)
     if user:
+        logout_user()
         db.session.delete(user)
         db.session.commit()
-
         return redirect(url_for('register'))
 
