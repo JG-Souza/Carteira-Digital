@@ -122,7 +122,7 @@ def ver_extrato(user_id, conta_id):
     if conta and conta.user_id == user.id:
         for transacao in transacoes:
             if transacao.conta_id == conta.id:
-                return render_template('extrato_conta.html', transacoes=transacoes, conta=conta)
+                return render_template('extrato_conta.html', transacoes=transacoes, conta=conta, user=user)
             
     return redirect(url_for('contas.ver_contas', user_id=user.id)) 
 
