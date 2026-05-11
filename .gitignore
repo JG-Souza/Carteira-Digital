@@ -2,3 +2,4 @@
 migrations/alembic.ini
 migrations/README
 migrations/script.py.mako
+/venv
